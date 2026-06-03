@@ -1,45 +1,40 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KI Playground</title>
+    <title>NoPenNoPaper</title>
     <!-- Google Fonts: Outfit (headings) & Inter (UI/Body) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="background-glow glow-1"></div>
     <div class="background-glow glow-2"></div>
 
     <div class="container">
         <header>
-            <div class="logo">
-                <span class="gradient-text">KI</span> Playground
-            </div>
-            <p class="subtitle">Stelle Fragen und erhalte direkte Antworten</p>
+            <p class="story-intro">Du stehst auf einer Lichtung. Du siehst in der Ferne ein Reh grasen.</p>
         </header>
 
+
+
         <main class="playground-card">
+            <!-- KI Chat -->
             <!-- Question Form -->
             <form id="question-form">
                 <div class="textarea-wrapper">
-                    <textarea 
-                        id="question-input" 
-                        placeholder="Schreibe hier deine Frage..." 
-                        rows="3" 
-                        required
-                    ></textarea>
-                    <div class="textarea-footer">
-                        <span id="char-counter">0 Zeichen</span>
-                        <span class="shortcut-hint">Drücke Strg + Enter zum Senden</span>
-                    </div>
+                    <textarea id="question-input" placeholder="Was tust du?" rows="3" required></textarea>
                 </div>
 
                 <button type="submit" id="submit-btn" class="primary-btn">
-                    <span class="btn-text">Frage senden</span>
+                    <span class="btn-text">Senden</span>
                     <div class="spinner hidden"></div>
                 </button>
             </form>
@@ -50,9 +45,12 @@
                     <h3>Antwort:</h3>
                     <div class="result-actions">
                         <button id="copy-btn" class="action-btn" title="Antwort kopieren">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
-                                <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                viewBox="0 0 16 16">
+                                <path
+                                    d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z" />
+                                <path
+                                    d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z" />
                             </svg>
                             Kopieren
                         </button>
@@ -66,22 +64,23 @@
             <!-- Error Panel -->
             <div id="error-container" class="error-container hidden">
                 <div class="error-header">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-                        <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                        viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                        <path
+                            d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z" />
                     </svg>
                     <span>Fehler aufgetreten</span>
                 </div>
                 <div id="error-message" class="error-message"></div>
                 <div id="error-suggestion" class="error-suggestion"></div>
             </div>
-        </main>
 
-        <footer>
-            <p>Erstellt für das MSIT KI-Projekt &bull; Gesichert über API Proxy &bull; API Key geladen</p>
-        </footer>
+
+        </main>
     </div>
 
     <script src="app.js"></script>
 </body>
+
 </html>

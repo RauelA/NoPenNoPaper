@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // DOM Elements
     const form = document.getElementById('question-form');
     const input = document.getElementById('question-input');
-    const charCounter = document.getElementById('char-counter');
     const submitBtn = document.getElementById('submit-btn');
     const btnText = submitBtn.querySelector('.btn-text');
     const spinner = submitBtn.querySelector('.spinner');
@@ -17,9 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Auto-resize textarea
     input.addEventListener('input', () => {
-        // Character counter
-        charCounter.textContent = `${input.value.length} Zeichen`;
-        
         // Auto resize height
         input.style.height = 'auto';
         input.style.height = `${Math.min(input.scrollHeight, 300)}px`;
@@ -190,4 +186,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         return html;
     }
+
 });
+

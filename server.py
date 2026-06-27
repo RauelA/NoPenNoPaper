@@ -45,7 +45,7 @@ class APIProxyHandler(SimpleHTTPRequestHandler):
             table = params.get('table', [None])[0]
             
             if not table:
-                self.send_json_response(400, {'error': 'Tabellenname fehlt.'})
+                self.send_json_response(400, {'error': 'Missing table name.'})
                 return
                 
             try:

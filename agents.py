@@ -148,11 +148,13 @@ def createStartScene() -> str:
     prompt = f"""
         You are an experienced screenwriter.
         Create a start scene in {world_prompt}.
+        Also create a character, that the player has to talk to the get quest information.
 
         Answer as string in the following format:
         "
         Name: ... (eg. Tavern 'Golden Boar'),
-        Details: ... (eg. Owned by Hergion Thunderwall)
+        Details: ... (eg. Owned by Hergion Thunderwall),
+        Info-Source: ... (eg. Hergion Thunderwall)
         "
         """
 
@@ -167,21 +169,18 @@ def createNextScene() -> str:
 
     prompt = f"""
         You are an experienced screenwriter.
-        Create a scene in {world_prompt}.
-        The last scene was {scene_prompt[-1]}.
+        Create a new scene in {world_prompt}. The last scene was {scene_prompt[-1]}.
+        Create a small obstacle for the player to overcome.
 
         Answer as string in the following format:
         "
         Name: ... (eg. Marketplace),
-        Details: ... (eg. Fountain in the center)
+        Details: ... (eg. Fountain in the center),
+        Obstacle: ... (eg. Fountain in the center)
         "
         """
     
     return screenwriter.invoke(prompt).content
-
-
-
-
 
 
 
@@ -193,35 +192,66 @@ screenwriter_npc    = screenwriter.bind_tools(createNextScene)
 
 
 
+#***              ***#
+#***   Narrator   ***#
+#***              ***#
 
+narrator = ChatOpenAI(model="gpt-4o-mini", temperature=0.5)
 
-
-narrator = ChatOpenAI(model="gpt-4o-mini", temperature=0)
-
+#***   Tools   ***#
 
 @tool
-def describeScene(scene: str) -> str:
+def describeScene() -> str:
     """
     Describes a scenery and returns a string.
     """
 
     prompt = f"""
         You are a storyteller.
-        Describe with flowery words the scene {scene_prompt[-1]}.
+        Describe the scene {scene_prompt[-1]} with flowery words.
         """
 
     return narrator.invoke(prompt).content
 
 
-narrator_scene = narrator.bind_tools(describeScene)    # Describes the current Scene
+narrator_scene = narrator.bind_tools(describeScene)
 
 
 
 
 
 
+#***               ***#
+#***   Validator   ***#
+#***               ***#
 
 validator = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+
+#***   Tools   ***#
+
+@tool
+def validateAction(action) -> str:
+    """
+    Validates weather an action of a player is possible or not
+    """
+
+    prompt = f"""
+        You are an experienced Pen&Paper game master.
+        The player is {player_prompt} and in the world {world_prompt}.
+        The scenery is {scene_prompt[-1]} with {environment_prompt}.
+        Is the action {action} possible/doable?
+
+        If yes, simply answer "Yes". 
+        If not, answer as string in the following format: "You cannot do that, because ..." (and describe the reason for the impossibility)        
+        """
+
+    return validator.invoke(prompt).content
+
+
+validator_action = validator.bind_tools(validateAction)
+
+
+
 
 
 

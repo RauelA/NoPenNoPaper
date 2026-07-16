@@ -3,7 +3,7 @@ import json
 import urllib.request
 import urllib.error
 from http.server import SimpleHTTPRequestHandler, HTTPServer
-import db
+
 
 # Simple .env parser to load API keys
 def load_env():
@@ -31,28 +31,6 @@ class APIProxyHandler(SimpleHTTPRequestHandler):
             self.send_response(204)
             self.end_headers()
             return
-
-        if self.path == '/api/db/schema':
-            try:
-                schema = db.get_tables_schema()
-                self.send_json_response(200, schema)
-            except Exception as e:
-                self.send_json_response(500, {'error': str(e)})
-        elif self.path.startswith('/api/db/data'):
-            from urllib.parse import urlparse, parse_qs
-            parsed = urlparse(self.path)
-            params = parse_qs(parsed.query)
-            table = params.get('table', [None])[0]
-            
-            if not table:
-                self.send_json_response(400, {'error': 'Missing table name.'})
-                return
-                
-            try:
-                data = db.get_table_data(table)
-                self.send_json_response(200, data)
-            except Exception as e:
-                self.send_json_response(500, {'error': str(e)})
         else:
             super().do_GET()
 
@@ -115,31 +93,6 @@ class APIProxyHandler(SimpleHTTPRequestHandler):
                     
             except Exception as e:
                 self.send_json_response(400, {'error': f'Ungültiger Request: {str(e)}'})
-        elif self.path == '/api/db/add-column':
-            content_length = int(self.headers['Content-Length'])
-            post_data = self.rfile.read(content_length)
-            try:
-                req_data = json.loads(post_data.decode('utf-8'))
-                table = req_data.get('table')
-                name = req_data.get('name')
-                col_type = req_data.get('type', 'TEXT')
-                
-                db.add_column_to_table(table, name, col_type)
-                self.send_json_response(200, {'success': True, 'message': f'Spalte {name} zu {table} hinzugefuegt.'})
-            except Exception as e:
-                self.send_json_response(400, {'error': str(e)})
-        elif self.path == '/api/db/insert':
-            content_length = int(self.headers['Content-Length'])
-            post_data = self.rfile.read(content_length)
-            try:
-                req_data = json.loads(post_data.decode('utf-8'))
-                table = req_data.get('table')
-                row_data = req_data.get('data')
-                
-                new_id = db.insert_row(table, row_data)
-                self.send_json_response(200, {'success': True, 'id': new_id})
-            except Exception as e:
-                self.send_json_response(400, {'error': str(e)})
         else:
             self.send_json_response(404, {'error': 'Not Found'})
 
@@ -151,7 +104,6 @@ class APIProxyHandler(SimpleHTTPRequestHandler):
         self.wfile.write(json.dumps(data).encode('utf-8'))
 
 def run(port=3000):
-    db.init_db()
     server_address = ('', port)
     httpd = HTTPServer(server_address, APIProxyHandler)
     print(f"Server laeuft unter http://localhost:{port}")

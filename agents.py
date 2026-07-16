@@ -11,7 +11,7 @@ load_dotenv()
 
 creative_llm = ChatOpenAI(
     model="gpt-4o-mini",
-    temperature=0.5
+    temperature=0.25
 )
 
 precise_llm = ChatOpenAI(
@@ -123,42 +123,48 @@ class SceneWriter(BaseAgent):
             
             {world}
             
-            Create the first playable location.
+            Create the first playable location in two sentences.
             
             Return ONLY:
             
             Name:
             Details:
-            Info Source:
             """
 
         return self.invoke(prompt)
 
-    def create_next_scene(self, world: str, previous_scene: str):
-
+    def create_next_scene(self, world, previous_scene, action):
         prompt = f"""
             World:
-            
+
             {world}
-            
+
+
             Previous Scene:
-            
+
             {previous_scene}
-            
-            Create the next scene.
-            
+
+
+            Player Action:
+
+            {action}
+
+
+            Create the next scene based on the player's action.
+
             Include:
-            
+
             - location
             - obstacle
             - interesting object
-            
+
+
             Return ONLY:
-            
+
             Name:
             Details:
             Obstacle:
-            """
+        """
 
         return self.invoke(prompt)
 
@@ -185,8 +191,6 @@ class NPCWriter(BaseAgent):
             Return ONLY:
             
             Name:
-            Occupation:
-            Appearance:
             Personality:
             Knows:
             """
@@ -200,24 +204,37 @@ class NPCWriter(BaseAgent):
 
 class Narrator(BaseAgent):
 
-    def describe(self, world: str, environment: str, scene: str):
+    def describe(
+        self,
+        world: str,
+        environment: str,
+        scene: str,
+        action: str = ""
+    ):
 
         prompt = f"""
-            You are a fantasy storyteller.
-            
-            World:
-            {world}
-            
-            Environment:
-            {environment}
-            
-            Scene:
-            {scene}
-            
-            Describe the location in immersive prose in German.
-            
-            Do not mention game mechanics.
-            """
+        You are a fantasy storyteller.
+
+        World:
+        {world}
+
+        Environment:
+        {environment}
+
+        Current Scene:
+        {scene}
+
+        Player Action:
+        {action}
+
+        Describe what happens in immersive German prose.
+
+        IMPORTANT:
+        - Include the player's action naturally.
+        - Describe consequences of the action.
+        - Do not mention game mechanics.
+        - Write 1-2 sentences.
+        """
 
         return self.invoke(prompt)
 

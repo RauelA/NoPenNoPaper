@@ -2,20 +2,22 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from graph import graph
-
+from graph import creation_graph
+from graph import game_graph
 
 app = FastAPI()
+
+game_state = {}
 
 
 # =====================================================
 # Game Session
 # =====================================================
 
-config = {
-    "configurable": {
-        "thread_id": "game_1"
-    }
+config={
+ "configurable":{
+    "thread_id":"game_1"
+ }
 }
 
 
@@ -31,7 +33,7 @@ class ActionRequest(BaseModel):
 @app.get("/api/start")
 def start_game():
 
-    state = {
+    initial_state = {
 
         "player_prompt": 
             "Name: Rauel, Dwarven Mage, Fire Magic, Likes carving",
@@ -59,15 +61,14 @@ def start_game():
         "game_status": ""
     }
 
+    global game_state
 
-    result = graph.invoke(
-        state,
-        config=config
+    game_state = creation_graph.invoke(
+        initial_state
     )
 
-
     return {
-        "scene": result["scene_description"]
+        "scene": game_state["scene_description"]
     }
 
 
@@ -79,18 +80,20 @@ def start_game():
 @app.post("/api/action")
 def action(request: ActionRequest):
 
+    global game_state
 
-    result = graph.invoke(
+    result = game_graph.invoke(
         {
+            **game_state,
             "player_action": request.action
         },
         config=config
     )
 
+    game_state = result
 
     return {
-        "scene": result["scene_description"],
-        "validation": result["validation"]
+        "scene": result["scene_description"]
     }
 
 

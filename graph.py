@@ -100,27 +100,14 @@ def create_start_scene(state: GameState):
     }
 
 
-def create_npc(state: GameState):
-
-    npc = npc_writer.create(
-        state["world"],
-        state["current_scene"]
-    )
-    print(npc)
-
-    return {
-        "current_npc": npc
-    }
-
-
-def narrate_scene(state: GameState):
+def narrate_scene(state):
 
     description = narrator.describe(
         state["world"],
         state["environment"],
-        state["current_scene"]
+        state["current_scene"],
+        ""
     )
-    print(description)
 
     return {
         "scene_description": description
@@ -149,42 +136,35 @@ def validate_player_action(state: GameState):
 
 def next_scene(state: GameState):
 
+    print("PLAYER ACTION:")
+    print(state["player_action"])
+
+    print("OLD SCENE:")
+    print(state["current_scene"])
+
     scene = scene_writer.create_next_scene(
         state["world"],
-        state["current_scene"]
+        state["current_scene"],
+        state["player_action"]
     )
-    print(scene)
 
-    visited = list(state["visited_scenes"])
-    visited.append(scene)
+    print("NEW SCENE:")
+    print(scene)
 
     return {
         "current_scene": scene,
-        "visited_scenes": visited
+        "visited_scenes": state["visited_scenes"] + [scene]
     }
 
 
-def create_next_npc(state: GameState):
-
-    npc = npc_writer.create(
-        state["world"],
-        state["current_scene"]
-    )
-    print(npc)
-
-    return {
-        "current_npc": npc
-    }
-
-
-def narrate_next_scene(state: GameState):
+def narrate_next_scene(state):
 
     description = narrator.describe(
         state["world"],
         state["environment"],
-        state["current_scene"]
+        state["current_scene"],
+        state["player_action"]
     )
-    print(description)
 
     return {
         "scene_description": description
@@ -253,54 +233,52 @@ def wait_for_player(state: GameState):
 #***   Build Graph   ***#
 #***                 ***#
 
-builder = StateGraph(GameState)
+creation_builder = StateGraph(GameState)
 
-
-builder.add_node("create_player", create_player)
-builder.add_node("create_world", create_world)
-builder.add_node("create_environment", create_environment)
-
-builder.add_node("create_start_scene", create_start_scene)
-
-builder.add_node("create_npc", create_npc)
-
-builder.add_node("narrate_scene", narrate_scene)
-
-builder.add_node("validate_action", validate_player_action)
-
-builder.add_node("next_scene", next_scene)
-
-builder.add_node("create_next_npc", create_next_npc)
-
-builder.add_node("narrate_next_scene", narrate_next_scene)
-
-builder.add_node("check_game_end", check_game_end)
-
-builder.add_node("invalid_action", invalid_action)
-
-builder.add_node("wait_for_player", wait_for_player)
+creation_builder.add_node("create_player", create_player)
+creation_builder.add_node("create_world", create_world)
+creation_builder.add_node("create_environment", create_environment)
+creation_builder.add_node("create_start_scene", create_start_scene)
+creation_builder.add_node("narrate_scene", narrate_scene)
+creation_builder.add_node("next_scene", next_scene)
+creation_builder.add_node("narrate_next_scene", narrate_next_scene)
+creation_builder.add_node("check_game_end", check_game_end)
+creation_builder.add_node("invalid_action", invalid_action)
+creation_builder.add_node("wait_for_player", wait_for_player)
 
 
 #***                              ***#
 #***   Initial Story Generation   ***#
 #***                              ***#
 
-builder.add_edge(START, "create_player")
-builder.add_edge("create_player", "create_world")
-builder.add_edge("create_world", "create_environment")
-builder.add_edge("create_environment", "create_start_scene")
-builder.add_edge("create_start_scene", "create_npc")
-builder.add_edge("create_npc", "narrate_scene")
-builder.add_edge("narrate_scene", "wait_for_player")
+creation_builder.add_edge(START, "create_player")
+creation_builder.add_edge("create_player", "create_world")
+creation_builder.add_edge("create_world", "create_environment")
+creation_builder.add_edge("create_environment", "create_start_scene")
+creation_builder.add_edge("create_start_scene", "narrate_scene")
+creation_builder.add_edge("narrate_scene", END)
 
+creation_graph = creation_builder.compile()
 
 #***                   ***#
 #***   Gameplay Loop   ***#
 #***                   ***#
 
-builder.add_edge("wait_for_player", "validate_action")
+game_builder = StateGraph(GameState)
 
-builder.add_conditional_edges(
+game_builder.add_node("validate_action", validate_player_action)
+game_builder.add_node("next_scene", next_scene)
+game_builder.add_node("narrate_next_scene", narrate_next_scene)
+game_builder.add_node("check_game_end", check_game_end)
+game_builder.add_node("invalid_action", invalid_action)
+game_builder.add_node("wait_for_player", wait_for_player)
+
+game_builder.add_edge(START, "validate_action")
+game_builder.add_edge("invalid_action", "wait_for_player")
+game_builder.add_edge("next_scene", "narrate_next_scene")
+game_builder.add_edge("narrate_next_scene", "check_game_end")
+
+game_builder.add_conditional_edges(
     "validate_action",
     action_router,
     {
@@ -309,13 +287,8 @@ builder.add_conditional_edges(
     },
 )
 
-builder.add_edge("invalid_action", "wait_for_player")
 
-builder.add_edge("next_scene", "create_next_npc")
-builder.add_edge("create_next_npc", "narrate_next_scene")
-builder.add_edge("narrate_next_scene", "check_game_end")
-
-builder.add_conditional_edges(
+game_builder.add_conditional_edges(
     "check_game_end",
     ending_router,
     {
@@ -327,6 +300,7 @@ builder.add_conditional_edges(
 
 memory = MemorySaver()
 
-graph = builder.compile(
+game_graph = game_builder.compile(
     checkpointer=memory
 )
+

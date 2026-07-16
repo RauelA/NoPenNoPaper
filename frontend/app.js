@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
+    startGame();
     // DOM Elements
+    const storyText = document.getElementById('story-text');
     const form = document.getElementById('question-form');
     const input = document.getElementById('question-input');
     const submitBtn = document.getElementById('submit-btn');
@@ -49,12 +51,14 @@ document.addEventListener('DOMContentLoaded', () => {
         errorSuggestion.textContent = '';
 
         try {
-            const response = await fetch('/api/ask', {
+            const response = await fetch('/api/action', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ question, model })
+                body: JSON.stringify({
+                    action: question
+                })
             });
 
             const data = await response.json();
@@ -68,11 +72,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Render Markdown Response
-            responseContent.innerHTML = formatMarkdown(data.reply);
+            storyText.textContent = data.scene;
             resultContainer.classList.remove('hidden');
 
             // Scroll response into view smoothly if on small screens
             resultContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            input.value = "";
+            input.style.height = "auto";
 
         } catch (error) {
             console.error('Error during API request:', error);
@@ -187,5 +193,29 @@ document.addEventListener('DOMContentLoaded', () => {
         return html;
     }
 
+    async function startGame() {
+
+        try {
+            const response = await fetch("/api/start", {
+                method: "GET"
+            });
+
+            if (!response.ok) {
+                throw new Error("Spiel konnte nicht gestartet werden");
+            }
+
+
+            const data = await response.json();
+
+            storyText.textContent = data.scene;
+
+
+        } catch(error) {
+            console.error(error);
+            storyText.textContent =
+                "Die Welt konnte nicht geladen werden.";
+
+        }
+    }
 });
 

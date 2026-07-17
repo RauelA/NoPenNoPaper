@@ -39,12 +39,12 @@ class BaseAgent:
 
 class WorldBuilder(BaseAgent):
 
-    def run(self, world_details: str):
+    def run(self, world_details: str, language: str):
 
         prompt = f"""
-            You are an experienced fantasy screenwriter.
+            You are an experienced screenwriter.
             
-            Create a game world.
+            Create a game world in {language}.
             
             Requirements:
             {world_details}
@@ -67,10 +67,10 @@ class WorldBuilder(BaseAgent):
 
 class PlayerBuilder(BaseAgent):
 
-    def run(self, player_details: str):
+    def run(self, player_details: str, language: str):
 
         prompt = f"""
-            Create a player character.
+            Create a player character in {language}.
             
             Requirements:
             {player_details}
@@ -92,14 +92,14 @@ class PlayerBuilder(BaseAgent):
 
 class EnvironmentBuilder(BaseAgent):
 
-    def run(self, world: str):
+    def run(self, world: str, language: str):
 
         prompt = f"""
             World:
             
             {world}
             
-            Generate the current environment.
+            Generate the current environment in {language}.
             
             Return ONLY:
             
@@ -116,14 +116,14 @@ class EnvironmentBuilder(BaseAgent):
 
 class SceneWriter(BaseAgent):
 
-    def create_start_scene(self, world: str):
+    def create_start_scene(self, world: str, language: str):
 
         prompt = f"""
             World:
             
             {world}
             
-            Create the first playable location in two sentences.
+            Create the first playable location in two sentences in {language}.
             
             Return ONLY:
             
@@ -133,7 +133,7 @@ class SceneWriter(BaseAgent):
 
         return self.invoke(prompt)
 
-    def create_next_scene(self, world, previous_scene, action):
+    def create_next_scene(self, world, previous_scene, action, language: str):
         prompt = f"""
             World:
 
@@ -150,7 +150,7 @@ class SceneWriter(BaseAgent):
             {action}
 
 
-            Create the next scene based on the player's action.
+            Create the next scene based on the player's action in {language}.
 
             Include:
 
@@ -175,7 +175,7 @@ class SceneWriter(BaseAgent):
 
 class NPCWriter(BaseAgent):
 
-    def create(self, world: str, scene: str):
+    def create(self, world: str, scene: str, language: str):
 
         prompt = f"""
             World:
@@ -186,7 +186,7 @@ class NPCWriter(BaseAgent):
             
             {scene}
             
-            Create one memorable NPC.
+            Create one memorable NPC in {language}.
             
             Return ONLY:
             
@@ -209,7 +209,8 @@ class Narrator(BaseAgent):
         world: str,
         environment: str,
         scene: str,
-        action: str = ""
+        action: str = "",
+        language: str = "English"
     ):
 
         prompt = f"""
@@ -227,7 +228,7 @@ class Narrator(BaseAgent):
         Player Action:
         {action}
 
-        Describe what happens in immersive German prose.
+        Describe what happens in immersive {language} prose.
 
         IMPORTANT:
         - Include the player's action naturally.
@@ -251,7 +252,8 @@ class Validator(BaseAgent):
         world: str,
         environment: str,
         scene: str,
-        action: str
+        action: str,
+        language: str
     ):
 
         prompt = f"""
@@ -282,7 +284,7 @@ class Validator(BaseAgent):
             Otherwise answer:
             
             NO:
-            <reason>
+            <reason in  {language}>
             """
 
         return self.invoke(prompt)
@@ -294,7 +296,7 @@ class Validator(BaseAgent):
 
 class GameEnder(BaseAgent):
 
-    def check(self, player: str, world: str, quest_state: str):
+    def check(self, player: str, world: str, quest_state: str, language: str):
 
         prompt = f"""
             World:
@@ -316,7 +318,7 @@ class GameEnder(BaseAgent):
             or
             
             GAME OVER:
-            <ending text>
+            <ending text in  {language}>
             """
 
         return self.invoke(prompt)

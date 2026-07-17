@@ -15,50 +15,95 @@
 </head>
 
 <body>
-    <div class="background-glow glow-1"></div>
-    <div class="background-glow glow-2"></div>
 
-    <div class="container">
-        <header>
-            <p id="story-text" class="story-intro">
-                Welt wird erschaffen...
-            </p>
-        </header>
-
-
+    <div id="setup-screen" class="container">
 
         <main class="playground-card">
-            <!-- KI Chat -->
-            <!-- Question Form -->
-            <form id="question-form">
-                <div class="textarea-wrapper">
-                    <textarea id="question-input" placeholder="Was tust du?" rows="3" required></textarea>
-                </div>
 
-                <button type="submit" id="submit-btn" class="primary-btn">
-                    <span class="btn-text">Senden</span>
-                    <div class="spinner hidden"></div>
-                </button>
-            </form>
+            <div class="input-group">
+                <label id="language-label">Language</label>
 
-
-            <!-- Error Panel -->
-            <div id="error-container" class="error-container hidden">
-                <div class="error-header">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                        viewBox="0 0 16 16">
-                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                        <path
-                            d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z" />
-                    </svg>
-                    <span>Fehler aufgetreten</span>
-                </div>
-                <div id="error-message" class="error-message"></div>
-                <div id="error-suggestion" class="error-suggestion"></div>
+                <select id="language-select" class="custom-select">
+                    <option value="de">🇩🇪 Deutsch</option>
+                    <option value="en">🇬🇧 English</option>
+                    <option value="zh">🇨🇳 中文</option>
+                </select>
             </div>
 
+            <div>
+                <h2 id="universe-title">Universe</h2>
 
+                <div class="textarea-wrapper">
+                    <textarea
+                        id="universe-input"
+                        placeholder="Beschreibe das Universum..."
+                        rows="5"></textarea>
+                </div>
+            </div>
+
+            <div>
+                <h2 id="player-title">Player</h2>
+
+                <div class="textarea-wrapper">
+                    <textarea
+                        id="player-input"
+                        placeholder="Beschreibe dich..."
+                        rows="5"></textarea>
+                </div>
+            </div>
+
+            <button id="start-btn" class="primary-btn">
+                Start
+            </button>
         </main>
+    </div>
+
+
+    <div id="game-screen" class="container hidden">
+
+        <div class="background-glow glow-1"></div>
+        <div class="background-glow glow-2"></div>
+
+        <div class="container">
+            <header>
+                <p id="story-text" class="story-intro">
+                    Welt wird erschaffen...
+                </p>
+            </header>
+
+            <main class="playground-card">
+                <!-- KI Chat -->
+                <!-- Question Form -->
+                <form id="question-form">
+                    <div class="textarea-wrapper">
+                        <textarea id="question-input" placeholder="Was tust du?" rows="3" required></textarea>
+                    </div>
+
+                    <button type="submit" id="submit-btn" class="primary-btn">
+                        <span class="btn-text">Senden</span>
+                        <div class="spinner hidden"></div>
+                    </button>
+                </form>
+
+
+                <!-- Error Panel -->
+                <div id="error-container" class="error-container hidden">
+                    <div class="error-header">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                            viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                            <path
+                                d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z" />
+                        </svg>
+                        <span>Fehler aufgetreten</span>
+                    </div>
+                    <div id="error-message" class="error-message"></div>
+                    <div id="error-suggestion" class="error-suggestion"></div>
+                </div>
+
+
+            </main>
+        </div>
     </div>
 
     <script src="app.js"></script>

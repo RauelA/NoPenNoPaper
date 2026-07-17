@@ -30,16 +30,27 @@ class ActionRequest(BaseModel):
 # Start Game
 # =====================================================
 
-@app.get("/api/start")
-def start_game():
+class StartRequest(BaseModel):
+
+    language: str
+
+    universe: str
+
+    player: str
+
+@app.post("/api/start")
+def start_game(request: StartRequest):
 
     initial_state = {
 
-        "player_prompt": 
-            "Name: Rauel, Dwarven Mage, Fire Magic, Likes carving",
+        "player_prompt":
+            request.player,
 
         "world_prompt":
-            "Fantasy, Middleearth",
+            request.universe,
+
+        "language":
+            request.language,
 
         "player": "",
         "world": "",

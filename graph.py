@@ -25,6 +25,7 @@ class GameState(TypedDict):
     # initial input
     player_prompt: str
     world_prompt: str
+    language: str
 
     # generated
     player: str
@@ -54,7 +55,8 @@ class GameState(TypedDict):
 def create_player(state: GameState):
 
     player = player_builder.run(
-        state["player_prompt"]
+        state["player_prompt"],
+        state["language"]
     )
     print(player)
 
@@ -66,7 +68,8 @@ def create_player(state: GameState):
 def create_world(state: GameState):
 
     world = world_builder.run(
-        state["world_prompt"]
+        state["world_prompt"],
+        state["language"]
     )
     print(world)
 
@@ -78,7 +81,8 @@ def create_world(state: GameState):
 def create_environment(state: GameState):
 
     environment = environment_builder.run(
-        state["world"]
+        state["world"],
+        state["language"]
     )
     print(environment)
 
@@ -90,7 +94,8 @@ def create_environment(state: GameState):
 def create_start_scene(state: GameState):
 
     scene = scene_writer.create_start_scene(
-        state["world"]
+        state["world"],
+        state["language"]
     )
     print(scene)
 
@@ -106,7 +111,8 @@ def narrate_scene(state):
         state["world"],
         state["environment"],
         state["current_scene"],
-        ""
+        "",
+        state["language"]
     )
 
     return {
@@ -125,7 +131,8 @@ def validate_player_action(state: GameState):
         state["world"],
         state["environment"],
         state["current_scene"],
-        state["player_action"]
+        state["player_action"],
+        state["language"]
     )
     print(result)
 
@@ -145,7 +152,8 @@ def next_scene(state: GameState):
     scene = scene_writer.create_next_scene(
         state["world"],
         state["current_scene"],
-        state["player_action"]
+        state["player_action"],
+        state["language"]
     )
 
     print("NEW SCENE:")
@@ -163,7 +171,8 @@ def narrate_next_scene(state):
         state["world"],
         state["environment"],
         state["current_scene"],
-        state["player_action"]
+        state["player_action"],
+        state["language"]
     )
 
     return {
@@ -176,7 +185,8 @@ def check_game_end(state: GameState):
     result = game_ender.check(
         state["player"],
         state["world"],
-        state["quest_state"]
+        state["quest_state"],
+        state["language"]
     )
     print(result)
 

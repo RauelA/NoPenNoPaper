@@ -158,7 +158,6 @@ class SceneWriter(BaseAgent):
             - obstacle
             - interesting object
 
-
             Return ONLY:
 
             Name:
@@ -214,7 +213,7 @@ class Narrator(BaseAgent):
     ):
 
         prompt = f"""
-        You are a fantasy storyteller.
+        You are a storyteller.
 
         World:
         {world}
@@ -228,13 +227,56 @@ class Narrator(BaseAgent):
         Player Action:
         {action}
 
-        Describe what happens in immersive {language} prose.
+        Describe what happens using an immersive narrative.
 
         IMPORTANT:
+        - Describe the scene in  {language}.
+        - Speak about the player in the second person singular.
         - Include the player's action naturally.
         - Describe consequences of the action.
         - Do not mention game mechanics.
-        - Write 1-2 sentences.
+        - Write only 1-2 sentences.
+        """
+
+        return self.invoke(prompt)
+
+
+    def describe_impossible_action(
+            self,
+            world: str,
+            environment: str,
+            scene: str,
+            action: str,
+            reason: str,
+            language: str = "English"
+    ):
+        prompt = f"""
+        You are a storyteller.
+
+        World:
+        {world}
+
+        Environment:
+        {environment}
+
+        Current Scene:
+        {scene}
+
+        Player Action:
+        {action}
+
+        Reason the action is impossible:
+        {reason}
+
+        Describe why the action cannot be performed.
+
+        IMPORTANT:
+        - Describe in {language}.
+        - Speak about the player in the second person singular.
+        - Write only 1 sentence with less than 15 words.
+        - Do not progress the scene.
+        - Do not invent alternative outcomes.
+        - Do not mention game mechanics.
         """
 
         return self.invoke(prompt)

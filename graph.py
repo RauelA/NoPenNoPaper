@@ -120,6 +120,7 @@ def narrate_scene(state):
     }
 
 
+
 #***              ***#
 #***   Gameplay   ***#
 #***              ***#
@@ -172,6 +173,22 @@ def narrate_next_scene(state):
         state["environment"],
         state["current_scene"],
         state["player_action"],
+        state["language"]
+    )
+
+    return {
+        "scene_description": description
+    }
+
+
+def narrate_invalid_action(state):
+
+    description = narrator.describe_impossible_action(
+        state["world"],
+        state["environment"],
+        state["current_scene"],
+        state["player_action"],
+        state["validation"],
         state["language"]
     )
 
@@ -268,23 +285,42 @@ creation_builder.add_edge("create_environment", "create_start_scene")
 creation_builder.add_edge("create_start_scene", "narrate_scene")
 creation_builder.add_edge("narrate_scene", END)
 
-creation_graph = creation_builder.compile()
 
 #***                   ***#
 #***   Gameplay Loop   ***#
 #***                   ***#
+
+"""
+        validate_action
+               │
+         YES ──┴── NO
+         │          │
+         ▼          ▼
+        next_scene  invalid_action
+         │          │
+         ▼          ▼
+        narrate_next_scene
+                    │
+                    ▼
+        narrate_invalid_action
+                    │
+                    ▼
+              wait_for_player
+"""
 
 game_builder = StateGraph(GameState)
 
 game_builder.add_node("validate_action", validate_player_action)
 game_builder.add_node("next_scene", next_scene)
 game_builder.add_node("narrate_next_scene", narrate_next_scene)
+game_builder.add_node("narrate_invalid_action", narrate_invalid_action)
 game_builder.add_node("check_game_end", check_game_end)
 game_builder.add_node("invalid_action", invalid_action)
 game_builder.add_node("wait_for_player", wait_for_player)
 
 game_builder.add_edge(START, "validate_action")
-game_builder.add_edge("invalid_action", "wait_for_player")
+game_builder.add_edge("invalid_action", "narrate_invalid_action")
+game_builder.add_edge("narrate_invalid_action", "wait_for_player")
 game_builder.add_edge("next_scene", "narrate_next_scene")
 game_builder.add_edge("narrate_next_scene", "check_game_end")
 
@@ -308,7 +344,15 @@ game_builder.add_conditional_edges(
 )
 
 
+#***            ***#
+#***   Memory   ***#
+#***            ***#
+
 memory = MemorySaver()
+
+creation_graph = creation_builder.compile(
+    checkpointer=memory
+)
 
 game_graph = game_builder.compile(
     checkpointer=memory

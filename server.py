@@ -75,7 +75,8 @@ def start_game(request: StartRequest):
     global game_state
 
     game_state = creation_graph.invoke(
-        initial_state
+        initial_state,
+        config=config
     )
 
     return {
@@ -95,7 +96,6 @@ def action(request: ActionRequest):
 
     result = game_graph.invoke(
         {
-            **game_state,
             "player_action": request.action
         },
         config=config

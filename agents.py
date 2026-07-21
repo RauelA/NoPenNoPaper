@@ -44,14 +44,14 @@ class WorldBuilder(BaseAgent):
         prompt = f"""
             You are an experienced screenwriter.
             
-            Create a game world in {language}.
+            Create a game world. 
             
             Requirements:
             {world_details}
+            Language: {language}
             
             Return ONLY:
             
-            Language:
             Genre:
             Universe:
             Quest:
@@ -70,17 +70,21 @@ class PlayerBuilder(BaseAgent):
     def run(self, player_details: str, language: str):
 
         prompt = f"""
-            Create a player character in {language}.
-            
-            Requirements:
+            Create a player character based on following details:
             {player_details}
-            
+                        
             Return ONLY:
             
             Name:
-            Race/Class:
+            Race:
+            Class:
             Skills:
             Details:
+            
+            IMPORTANT:
+            - Write in {language}.
+            - Write Race in singular.
+            - Write the Details in 3 bullet points, each with up to 3 words.
             """
 
         return self.invoke(prompt)
@@ -95,11 +99,11 @@ class EnvironmentBuilder(BaseAgent):
     def run(self, world: str, language: str):
 
         prompt = f"""
-            World:
+            Generate the current environment.
             
-            {world}
-            
-            Generate the current environment in {language}.
+            Requirements:
+            World: {world}
+            Language: {language}
             
             Return ONLY:
             
@@ -116,14 +120,16 @@ class EnvironmentBuilder(BaseAgent):
 
 class SceneWriter(BaseAgent):
 
-    def create_start_scene(self, world: str, language: str):
+    def create_start_scene(self, world: str, player: str, language: str):
 
         prompt = f"""
-            World:
+        
+            Create the first playable location in two sentences.
             
-            {world}
-            
-            Create the first playable location in two sentences in {language}.
+            Requirements:
+            World: {world}
+            Player: {player}
+            Language: {language}
             
             Return ONLY:
             
@@ -133,24 +139,22 @@ class SceneWriter(BaseAgent):
 
         return self.invoke(prompt)
 
-    def create_next_scene(self, world, previous_scene, action, language: str):
+
+    def create_next_scene(self, world, player, previous_scene, action, language: str):
         prompt = f"""
-            World:
+        
+            World: {world}
+            
+            Player: {player}
 
-            {world}
+            Previous Scene: {previous_scene}
 
-
-            Previous Scene:
-
-            {previous_scene}
-
-
-            Player Action:
-
-            {action}
+            Player Action: {action}
+            
+            Language: {language}
 
 
-            Create the next scene based on the player's action in {language}.
+            Create the next scene based on the player's action.
 
             Include:
 
@@ -177,15 +181,14 @@ class NPCWriter(BaseAgent):
     def create(self, world: str, scene: str, language: str):
 
         prompt = f"""
-            World:
+        
+            World: {world}
+
+            Scene: {scene}
             
-            {world}
+            Language: {language}
             
-            Scene:
-            
-            {scene}
-            
-            Create one memorable NPC in {language}.
+            Create one memorable NPC.
             
             Return ONLY:
             
@@ -206,31 +209,30 @@ class Narrator(BaseAgent):
     def describe(
         self,
         world: str,
+        player: str,
         environment: str,
         scene: str,
-        action: str = "",
-        language: str = "English"
+        action: str,
+        language: str
     ):
 
         prompt = f"""
         You are a storyteller.
 
-        World:
-        {world}
+        World: {world}
+        
+        Player: {player}
 
-        Environment:
-        {environment}
+        Environment: {environment}
 
-        Current Scene:
-        {scene}
+        Current Scene: {scene}
 
-        Player Action:
-        {action}
+        Player Action: {action}
 
         Describe what happens using an immersive narrative.
 
         IMPORTANT:
-        - Describe the scene in  {language}.
+        - Write the scene in {language}.
         - Speak about the player in the second person singular.
         - Include the player's action naturally.
         - Describe consequences of the action.
@@ -271,7 +273,7 @@ class Narrator(BaseAgent):
         Describe why the action cannot be performed.
 
         IMPORTANT:
-        - Describe in {language}.
+        - Write in {language}.
         - Speak about the player in the second person singular.
         - Write only 1 sentence with less than 15 words.
         - Do not progress the scene.
@@ -326,7 +328,7 @@ class Validator(BaseAgent):
             Otherwise answer:
             
             NO:
-            <reason in  {language}>
+            <reason in {language}>
             """
 
         return self.invoke(prompt)
@@ -360,7 +362,7 @@ class GameEnder(BaseAgent):
             or
             
             GAME OVER:
-            <ending text in  {language}>
+            <ending text in {language}>
             """
 
         return self.invoke(prompt)

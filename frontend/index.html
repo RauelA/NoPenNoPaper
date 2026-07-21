@@ -21,8 +21,6 @@
         <main class="playground-card">
 
             <div class="input-group">
-                <label id="language-label">Language</label>
-
                 <select id="language-select" class="custom-select">
                     <option value="de">🇩🇪 Deutsch</option>
                     <option value="en">🇬🇧 English</option>
@@ -58,13 +56,32 @@
         </main>
     </div>
 
+    <div id="game-screen" class="game-screen hidden">
 
-    <div id="game-screen" class="container hidden">
+        <div id="player-card">
+
+            <div id="player-panel">
+
+                <img id="card-image" src="images/human.png">
+
+                <h3 id="card-name">Name</h3>
+
+                <p><strong>Volk:</strong> <span id="card-race">-</span></p>
+
+                <p><strong>Klasse:</strong> <span id="card-class">-</span></p>
+
+                <p><strong>Details:</strong></p>
+
+                <div id="card-details">-</div>
+
+            </div>
+
+        </div>
 
         <div class="background-glow glow-1"></div>
         <div class="background-glow glow-2"></div>
 
-        <div class="container">
+        <div class="game-content">
             <header>
                 <p id="story-text" class="story-intro">
                     Welt wird erschaffen...

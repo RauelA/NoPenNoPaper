@@ -436,3 +436,78 @@ footer {
         padding: 20px;
     }
 }
+
+
+#game-screen {
+
+    width:100%;
+    max-width:1200px;
+
+    display:flex;
+
+    flex-direction:row;
+
+    align-items:center;
+
+    gap:40px;
+
+}
+
+
+.game-content {
+
+    flex:1;
+
+    max-width:800px;
+
+}
+
+#player-card {
+
+    position: relative;
+
+    flex-shrink: 0;
+
+    z-index: 10;
+}
+
+#card-details {
+    white-space: pre-line;
+}
+
+#player-panel {
+
+    width: 260px;
+
+    padding: 18px;
+
+    border-radius: 16px;
+
+    background: rgba(25,25,35,.95);
+
+    border: 1px solid rgba(255,255,255,.1);
+
+    backdrop-filter: blur(20px);
+
+}
+
+#player-panel img{
+
+    width:100px;
+    height:100px;
+
+    object-fit:cover;
+
+    border-radius:10px;
+    margin-bottom:15px;
+}
+
+#player-panel h3{
+
+    margin-bottom:12px;
+}
+
+#player-panel p{
+
+    margin-bottom:8px;
+}

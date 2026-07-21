@@ -6,14 +6,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const submitBtn = document.getElementById("submit-btn");
 
 
-    // Spiel starten
     document.getElementById("start-btn").addEventListener("click", startGame);
 
     const translations = {
 
         de: {
             universe: "Universum / Genre",
-            player: "Spieler",
+            player: "Spieler / Klasse",
             universePlaceholder:
                 "Beschreibe das Universum und dessen Eigenschaften.",
             playerPlaceholder:
@@ -28,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         en: {
             universe: "Universe / Genre",
-            player: "Player",
+            player: "Player / Class",
             universePlaceholder:
                 "Describe the universe and its properties.",
             playerPlaceholder:
@@ -43,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         zh: {
             universe: "宇宙 / 类型",
-            player: "玩家",
+            player: "玩家 / 职业",
             universePlaceholder:
                 "描述这个宇宙及其特点。",
             playerPlaceholder:
@@ -94,6 +93,93 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
+
+    function parsePlayer(text) {
+
+        const data = {};
+        let currentKey = null;
+
+        text.split("\n").forEach(line => {
+
+            line = line.trim();
+
+            if (!line) return;
+
+
+            if (line.includes(":")) {
+
+                const parts = line.split(":");
+
+                currentKey = parts[0]
+                    .trim()
+                    .toLowerCase();
+
+                data[currentKey] = parts
+                    .slice(1)
+                    .join(":")
+                    .trim();
+
+            }
+
+            else if (currentKey === "details") {
+
+                data[currentKey] += "\n" + line;
+
+            }
+
+        });
+
+        if (data.details) {
+            data.details = data.details.trim();
+        }
+
+        return data;
+    }
+
+
+
+
+    function updatePlayerCard(playerText){
+
+
+    const player = parsePlayer(playerText);
+
+        document.getElementById("card-name").textContent =
+            player.name || "-";
+
+        document.getElementById("card-race").textContent =
+            player.race || "-";
+
+        document.getElementById("card-class").textContent =
+            player.class || "-";
+
+        document.getElementById("card-details").textContent =
+            player.details || "-";
+
+        let image = "dwarf.png";
+
+        if(player.race){
+
+            const race = player.race.toLowerCase();
+
+            if(race.includes("dwarf"))
+                image = "dwarf.png";
+
+            else if(race.includes("elf"))
+                image = "elf.png";
+
+            else if(race.includes("orc"))
+                image = "orc.png";
+
+            else if(race.includes("human"))
+                image = "human.png";
+        }
+
+        document.getElementById("card-image").src =
+            "images/" + image;
+    }
+
+
     async function startGame(){
 
         const startBtn = document.getElementById("start-btn");
@@ -131,6 +217,8 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         const data = await response.json();
+
+        updatePlayerCard(data.player);
 
         storyText.textContent = data.scene;
 

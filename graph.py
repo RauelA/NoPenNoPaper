@@ -95,6 +95,7 @@ def create_start_scene(state: GameState):
 
     scene = scene_writer.create_start_scene(
         state["world"],
+        state["player"],
         state["language"]
     )
     print(scene)
@@ -109,9 +110,10 @@ def narrate_scene(state):
 
     description = narrator.describe(
         state["world"],
+        state["player"],
         state["environment"],
         state["current_scene"],
-        "",
+        state["player_action"],
         state["language"]
     )
 
@@ -152,6 +154,7 @@ def next_scene(state: GameState):
 
     scene = scene_writer.create_next_scene(
         state["world"],
+        state["player"],
         state["current_scene"],
         state["player_action"],
         state["language"]
@@ -170,6 +173,7 @@ def narrate_next_scene(state):
 
     description = narrator.describe(
         state["world"],
+        state["player"],
         state["environment"],
         state["current_scene"],
         state["player_action"],

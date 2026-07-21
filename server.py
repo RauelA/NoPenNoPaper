@@ -80,7 +80,8 @@ def start_game(request: StartRequest):
     )
 
     return {
-        "scene": game_state["scene_description"]
+        "scene": game_state["scene_description"],
+        "player": game_state["player"]
     }
 
 

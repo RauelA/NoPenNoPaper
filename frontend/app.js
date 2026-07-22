@@ -162,7 +162,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const race = player.race.toLowerCase();
 
-            if(race.includes("dwarf"))
+            if(race.includes("dwarf") || race.includes("zwerg"))
                 image = "dwarf.png";
 
             else if(race.includes("elf"))
@@ -171,7 +171,7 @@ document.addEventListener("DOMContentLoaded", () => {
             else if(race.includes("orc"))
                 image = "orc.png";
 
-            else if(race.includes("human"))
+            else
                 image = "human.png";
         }
 

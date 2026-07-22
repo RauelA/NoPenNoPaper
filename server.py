@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
+from uuid import uuid4
+
 
 from graph import creation_graph
 from graph import game_graph
@@ -14,11 +16,9 @@ game_state = {}
 # Game Session
 # =====================================================
 
-config={
- "configurable":{
-    "thread_id":"game_1"
- }
-}
+
+thread_id = None
+config = None
 
 
 class ActionRequest(BaseModel):
@@ -40,6 +40,17 @@ class StartRequest(BaseModel):
 
 @app.post("/api/start")
 def start_game(request: StartRequest):
+
+    global thread_id
+    global config
+
+    thread_id = str(uuid4())
+
+    config = {
+        "configurable": {
+            "thread_id": thread_id
+        }
+    }
 
     initial_state = {
 

@@ -70,6 +70,7 @@ class PlayerBuilder(BaseAgent):
     def run(self, player_details: str, language: str):
 
         prompt = f"""
+        
             Create a player character based on following details:
             {player_details}
                         
@@ -83,7 +84,9 @@ class PlayerBuilder(BaseAgent):
             
             IMPORTANT:
             - Write in {language}.
+            - Write the Name pure as Name without its Race or Class.
             - Write Race in singular.
+            - Write Class as whats fits most to the genre.
             - Write the Details in 3 bullet points, each with up to 3 words.
             """
 

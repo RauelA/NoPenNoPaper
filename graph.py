@@ -295,21 +295,21 @@ creation_builder.add_edge("narrate_scene", END)
 #***                   ***#
 
 """
-        validate_action
-               │
-         YES ──┴── NO
-         │          │
-         ▼          ▼
+         validate_action
+                │
+        YES ────┴──── NO
+         │             │
+         ▼             ▼
         next_scene  invalid_action
-         │          │
-         ▼          ▼
-        narrate_next_scene
-                    │
-                    ▼
-        narrate_invalid_action
-                    │
-                    ▼
-              wait_for_player
+         │             │
+         ▼             ▼
+ narrate_next_scene
+                       │
+                       ▼
+           narrate_invalid_action
+                       │
+                       ▼
+                 wait_for_player
 """
 
 game_builder = StateGraph(GameState)
